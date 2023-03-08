@@ -29,7 +29,7 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorHeight="3dp">
+            app:tabIndicatorHeight="4dp">
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabItem"
