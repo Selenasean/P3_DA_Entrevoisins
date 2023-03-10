@@ -5,4 +5,13 @@
     <string name="activity_new_neighbour">New neighbour</string>
     <string name="card_neighbour_aboutme">A propos de moi</string>
 
+    // string for images, icons, image's btn
+    <string name="add_neighbour">neighbour add button</string>
+    <string name="add_favorite">favorite button add</string>
+    <string name="icon_world">icon world</string>
+    <string name="icon_phone">icon phone</string>
+    <string name="icon_localisation">icon localisation</string>
+    <string name="back_btn">button return to main page</string>
+    <string name="pp_user">profile picture user</string>
 </resources>
+
