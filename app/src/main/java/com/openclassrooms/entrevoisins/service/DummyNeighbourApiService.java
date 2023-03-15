@@ -11,13 +11,41 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
 
     private List<Neighbour> neighbours = DummyNeighbourGenerator.generateNeighbours();
 
-
     /**
      * {@inheritDoc}
      */
     @Override
     public List<Neighbour> getNeighbours() {
         return neighbours;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Neighbour getNeighbourById(long id){
+        for (Neighbour neighbour : neighbours) {
+            if(neighbour.getId() == id){
+                return neighbour;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addNeighbourToFavorite(Neighbour neighbour){
+        neighbour.setFavorite(true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeNeighbourFromFavorite(Neighbour neighbour){
+        neighbour.setFavorite(false);
     }
 
     /**

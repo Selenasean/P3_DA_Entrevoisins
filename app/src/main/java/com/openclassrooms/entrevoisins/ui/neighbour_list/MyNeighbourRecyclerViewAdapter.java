@@ -1,6 +1,10 @@
 package com.openclassrooms.entrevoisins.ui.neighbour_list;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +27,13 @@ import butterknife.ButterKnife;
 
 public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeighbourRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Neighbour> mNeighbours;
+    private final List<Neighbour> mNeighbours; // declare Neighbours List
+    long mNeighbourId;
+    public static final String NEIGHBOUR_ID = "NEIGHBOUR_ID";
 
+    /**
+     * Constructor
+     * */
     public MyNeighbourRecyclerViewAdapter(List<Neighbour> items) {
         mNeighbours = items;
     }
@@ -33,12 +42,14 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_neighbour, parent, false);
+
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Neighbour neighbour = mNeighbours.get(position);
+
         holder.mNeighbourName.setText(neighbour.getName());
         Glide.with(holder.mNeighbourAvatar.getContext())
                 .load(neighbour.getAvatarUrl())
@@ -51,6 +62,17 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
                 EventBus.getDefault().post(new DeleteNeighbourEvent(neighbour));
             }
         });
+        // onclick listener on items clicked of the recycleView
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Context context = holder.itemView.getContext();
+                Neighbour clickedNeighbour = neighbour;
+                launchDetailNeighbourActivity(clickedNeighbour, context);
+            }
+
+        });
+
     }
 
     @Override
@@ -70,5 +92,13 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
             super(view);
             ButterKnife.bind(this, view);
         }
+    }
+
+    public void launchDetailNeighbourActivity(Neighbour neighbour, Context context){
+        final Context myContext = context;
+        Intent intent = new Intent(myContext, DetailNeighbourActivity.class);
+        mNeighbourId = neighbour.getId();
+        intent.putExtra(NEIGHBOUR_ID, mNeighbourId);
+        context.startActivity(intent);
     }
 }

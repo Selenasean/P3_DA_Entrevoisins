@@ -38,6 +38,8 @@ public class AddNeighbourActivity extends AppCompatActivity {
     @BindView(R.id.create)
     MaterialButton addButton;
 
+    boolean mIsFavorite;
+
     private NeighbourApiService mApiService;
     private String mNeighbourImage;
 
@@ -87,7 +89,8 @@ public class AddNeighbourActivity extends AppCompatActivity {
                 mNeighbourImage,
                 addressInput.getEditText().getText().toString(),
                 phoneInput.getEditText().getText().toString(),
-                aboutMeInput.getEditText().getText().toString()
+                aboutMeInput.getEditText().getText().toString(),
+                mIsFavorite
         );
         mApiService.createNeighbour(neighbour);
         finish();

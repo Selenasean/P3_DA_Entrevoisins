@@ -1,5 +1,7 @@
 package com.openclassrooms.entrevoisins.service;
 
+import androidx.annotation.Nullable;
+
 import com.openclassrooms.entrevoisins.model.Neighbour;
 
 import java.util.List;
@@ -15,6 +17,21 @@ public interface NeighbourApiService {
      * @return {@link List}
      */
     List<Neighbour> getNeighbours();
+
+    /** Get one neighbour by his id
+     * @return {@link Neighbour}
+     * */
+    @Nullable Neighbour getNeighbourById(long id);
+
+    /** Put neighbour in favorite List
+     * @param neighbour
+     * */
+    void addNeighbourToFavorite(Neighbour neighbour);
+
+    /** Remove neighbour from favorite List
+     * @param neighbour
+     * */
+    void removeNeighbourFromFavorite(Neighbour neighbour);
 
     /**
      * Deletes a neighbour

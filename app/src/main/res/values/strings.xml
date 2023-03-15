@@ -7,7 +7,8 @@
 
     // string for images, icons, image's btn
     <string name="add_neighbour">neighbour add button</string>
-    <string name="add_favorite">favorite button add</string>
+    <string name="add_favorite_empty">favorite button add empty</string>
+    <string name="add_favorite">favorite button add full</string>
     <string name="icon_world">icon world</string>
     <string name="icon_phone">icon phone</string>
     <string name="icon_localisation">icon localisation</string>
