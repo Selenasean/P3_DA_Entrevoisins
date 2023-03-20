@@ -2,6 +2,7 @@ package com.openclassrooms.entrevoisins.service;
 
 import com.openclassrooms.entrevoisins.model.Neighbour;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +24,20 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
      * {@inheritDoc}
      */
     @Override
+    public List<Neighbour> getFavoriteNeighbours() {
+        List<Neighbour> favoriteList = new ArrayList<>();
+        for (Neighbour neighbour : neighbours) {
+            if(neighbour.isFavorite()){
+               favoriteList.add(neighbour);
+            }
+        }
+        return favoriteList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Neighbour getNeighbourById(long id){
         for (Neighbour neighbour : neighbours) {
             if(neighbour.getId() == id){
@@ -30,6 +45,28 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
             }
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteNeighbour(long id ) {
+        for (Neighbour neighbour : neighbours) {
+            if(neighbour.getId() == id){
+                neighbours.remove(neighbour);
+                return;
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param neighbour
+     */
+    @Override
+    public void createNeighbour(Neighbour neighbour) {
+        neighbours.add(neighbour);
     }
 
     /**
@@ -48,20 +85,5 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
         neighbour.setFavorite(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void deleteNeighbour(Neighbour neighbour) {
-        neighbours.remove(neighbour);
-    }
 
-    /**
-     * {@inheritDoc}
-     * @param neighbour
-     */
-    @Override
-    public void createNeighbour(Neighbour neighbour) {
-        neighbours.add(neighbour);
-    }
 }

@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.entrevoisins.R;
-import com.openclassrooms.entrevoisins.events.DeleteNeighbourEvent;
 import com.openclassrooms.entrevoisins.model.Neighbour;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -31,19 +27,25 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
     long mNeighbourId;
     public static final String NEIGHBOUR_ID = "NEIGHBOUR_ID";
 
+    private OnTrashClickListener mListener;
+
+    // public void setOnTrashClickListener(OnTrashClickListener listener){ mListener = listener; }
+
     /**
      * Constructor
      * */
-    public MyNeighbourRecyclerViewAdapter(List<Neighbour> items) {
+    public MyNeighbourRecyclerViewAdapter(List<Neighbour> items, OnTrashClickListener listener ) {
         mNeighbours = items;
+        mListener = listener;
     }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_neighbour, parent, false);
-
-        return new ViewHolder(view);
+        ViewHolder neighbourViewHolder = new ViewHolder(view, mListener);
+        return neighbourViewHolder;
     }
 
     @Override
@@ -56,13 +58,7 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.mNeighbourAvatar);
 
-        holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EventBus.getDefault().post(new DeleteNeighbourEvent(neighbour));
-            }
-        });
-        // onclick listener on items clicked of the recycleView
+        // onclick listener on items clicked of the recycleView to go to detail page
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +68,14 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
             }
 
         });
+        holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mNeighbourId = neighbour.getId();
+                mListener.onDeleteClicked(mNeighbourId);
+                notifyDataSetChanged();
+            }
+        });
 
     }
 
@@ -80,6 +84,8 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
         return mNeighbours.size();
     }
 
+
+    /** ViewHolder */
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_list_avatar)
         public ImageView mNeighbourAvatar;
@@ -88,10 +94,39 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
         @BindView(R.id.item_list_delete_button)
         public ImageButton mDeleteButton;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, final OnTrashClickListener listener) {
             super(view);
             ButterKnife.bind(this, view);
+
+           /** mDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Neighbour clickedNeighbour = neighbour;
+                    mNeighbourId = neighbour.getId();
+                    mListener.deleteFromFavoriteList(mNeighbourId);
+                }
+            });*/
+
+
+
+           /** mDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mNeighbourId = neighbour.getId();
+                    Log.i("listener_RVadapter", String.valueOf(listener));
+                                   // if(inWhichFragment == 0){
+                                        Log.i("RVadapter_click", "ça clic sur trash fragment 0");
+                    mNeighbourId = neighbour.getId();
+                                     //   listener.deleteFromFavoriteList(mNeighbourId);
+
+                                    //}else {
+                                        Log.i("RVadapter_click", "ça clic sur trash fragment 1");
+                                      //  listener.deleteFromFavoriteList(mNeighbourId);
+                                    //}
+                        }
+            });*/
         }
+
     }
 
     public void launchDetailNeighbourActivity(Neighbour neighbour, Context context){

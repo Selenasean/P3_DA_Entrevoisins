@@ -25,11 +25,11 @@ public class DetailNeighbourActivity extends AppCompatActivity {
     private ActivityDetailNeighbourBinding binding;
     String mNeighbourName;
     String mAvatarNeighbourURL;
-    boolean mNeighbourIsFavorite;
     long mNeighbourId;
-    public static  final String NEIGHBOUR_ID = "NEIGHBOUR_ID";
-    NeighbourApiService mApiService;
+    public static final String NEIGHBOUR_ID = "NEIGHBOUR_ID";
+    private NeighbourApiService mApiService;
     @NonNull Neighbour mNeighbour;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,6 @@ public class DetailNeighbourActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mNeighbourId = intent.getLongExtra(NEIGHBOUR_ID, 0);
         Log.i("SEL_NEIGHBOUR_ID", String.valueOf(mNeighbourId));
-        Log.i("API_SERVICE", String.valueOf(mApiService));
         mNeighbour = Objects.requireNonNull(mApiService.getNeighbourById(mNeighbourId));
         Log.i("SEL_NEIGHBOUR_API", String.valueOf(mNeighbour));
 
@@ -87,7 +86,6 @@ public class DetailNeighbourActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!neighbour.isFavorite()){
                     binding.favoriteBtn.setImageResource(drawable.ic_star_yellow_24dp);
-
                 // modify isFavorite to true using API
                     mApiService.addNeighbourToFavorite(neighbour);
                     // popup msg
@@ -100,6 +98,7 @@ public class DetailNeighbourActivity extends AppCompatActivity {
                     Toast.makeText(DetailNeighbourActivity.this, "Vous avez retiré " + mNeighbourName + " de vos voisins préférés !", Toast.LENGTH_SHORT).show();
                 }
                 Log.i("SEL_DETAIL_ISFAV", String.valueOf(neighbour.isFavorite()));
+                Log.i("List_fav_after_add", String.valueOf(mApiService.getFavoriteNeighbours()));
             }
         });
     }

@@ -27,7 +27,7 @@ public class NeighbourFragment extends Fragment {
     private NeighbourApiService mApiService;
     private List<Neighbour> mNeighbours;
     private RecyclerView mRecyclerView;
-
+    private MyNeighbourRecyclerViewAdapter mAdapter;
 
     /**
      * Create and return a new instance
@@ -53,16 +53,12 @@ public class NeighbourFragment extends Fragment {
         mRecyclerView = (RecyclerView) view;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+
+        initList();
+
         return view;
     }
 
-    /**
-     * Init the List of neighbours
-     */
-    private void initList() {
-        mNeighbours = mApiService.getNeighbours();
-        mRecyclerView.setAdapter(new MyNeighbourRecyclerViewAdapter(mNeighbours));
-    }
 
     @Override
     public void onResume() {
@@ -70,25 +66,33 @@ public class NeighbourFragment extends Fragment {
         initList();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
+    /**
+     * Init the List of neighbours
+     */
+    private void initList() {
+        mNeighbours = mApiService.getNeighbours();
+        mAdapter = new MyNeighbourRecyclerViewAdapter(mNeighbours, new OnTrashClickListener() {
+
+            @Override
+            public void onDeleteClicked(long id) {
+                mApiService.removeNeighbourFromFavorite(mApiService.getNeighbourById(id));
+                mApiService.deleteNeighbour(id);
+            }
+        });
+
+        mRecyclerView.setAdapter(mAdapter);
+
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
 
     /**
      * Fired if the user clicks on a delete button
      * @param event
-     */
+
     @Subscribe
     public void onDeleteNeighbour(DeleteNeighbourEvent event) {
         mApiService.deleteNeighbour(event.neighbour);
         initList();
     }
+    */
 }
