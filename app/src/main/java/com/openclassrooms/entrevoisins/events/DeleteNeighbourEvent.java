@@ -13,7 +13,7 @@ public class DeleteNeighbourEvent {
     public Neighbour neighbour;
 
     /**
-     * Constructor.
+     * Constructor
      * @param neighbour
      */
     public DeleteNeighbourEvent(Neighbour neighbour) {

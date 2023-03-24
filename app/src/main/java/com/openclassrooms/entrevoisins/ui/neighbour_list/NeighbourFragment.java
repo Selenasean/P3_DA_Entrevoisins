@@ -25,7 +25,6 @@ import java.util.List;
 public class NeighbourFragment extends Fragment {
 
     private NeighbourApiService mApiService;
-    private List<Neighbour> mNeighbours;
     private RecyclerView mRecyclerView;
     private MyNeighbourRecyclerViewAdapter mAdapter;
 
@@ -45,11 +44,11 @@ public class NeighbourFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //Link fragment and his layout
         View view = inflater.inflate(R.layout.fragment_neighbour_list, container, false);
-        Context context = view.getContext();
 
+        Context context = view.getContext();
         mRecyclerView = (RecyclerView) view;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
@@ -59,40 +58,38 @@ public class NeighbourFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
-        initList();
+        EventBus.getDefault().register(this);
+        mAdapter.update(mApiService.getNeighbours());
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onDeleteEvent(DeleteNeighbourEvent event){
+        mAdapter.update(mApiService.getNeighbours());
     }
 
     /**
      * Init the List of neighbours
      */
     private void initList() {
-        mNeighbours = mApiService.getNeighbours();
-        mAdapter = new MyNeighbourRecyclerViewAdapter(mNeighbours, new OnTrashClickListener() {
+        mAdapter = new MyNeighbourRecyclerViewAdapter(mApiService.getNeighbours(), new OnTrashClickListener() {
 
             @Override
             public void onDeleteClicked(long id) {
-                mApiService.removeNeighbourFromFavorite(mApiService.getNeighbourById(id));
+                mApiService.removeNeighbourFromFavorite(id);
                 mApiService.deleteNeighbour(id);
+                mAdapter.update(mApiService.getNeighbours());
             }
         });
-
         mRecyclerView.setAdapter(mAdapter);
-
     }
 
-
-    /**
-     * Fired if the user clicks on a delete button
-     * @param event
-
-    @Subscribe
-    public void onDeleteNeighbour(DeleteNeighbourEvent event) {
-        mApiService.deleteNeighbour(event.neighbour);
-        initList();
-    }
-    */
 }

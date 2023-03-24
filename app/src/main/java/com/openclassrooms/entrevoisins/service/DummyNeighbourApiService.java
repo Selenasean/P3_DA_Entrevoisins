@@ -1,23 +1,32 @@
 package com.openclassrooms.entrevoisins.service;
 
+import com.openclassrooms.entrevoisins.events.DeleteNeighbourEvent;
 import com.openclassrooms.entrevoisins.model.Neighbour;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Dummy mock for the Api
  */
-public class DummyNeighbourApiService implements  NeighbourApiService {
+public class DummyNeighbourApiService implements NeighbourApiService {
 
-    private List<Neighbour> neighbours = DummyNeighbourGenerator.generateNeighbours();
+    private List<Neighbour> neighbours;
+
+    public DummyNeighbourApiService(List<Neighbour> neighbours){
+      this.neighbours = neighbours;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public List<Neighbour> getNeighbours() {
-        return neighbours;
+     return neighbours;
     }
 
     /**
@@ -36,6 +45,7 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
 
     /**
      * {@inheritDoc}
+     * @param id
      */
     @Override
     public Neighbour getNeighbourById(long id){
@@ -49,11 +59,13 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
 
     /**
      * {@inheritDoc}
+     * @param id
      */
     @Override
     public void deleteNeighbour(long id ) {
         for (Neighbour neighbour : neighbours) {
             if(neighbour.getId() == id){
+                EventBus.getDefault().post(new DeleteNeighbourEvent(neighbour));
                 neighbours.remove(neighbour);
                 return;
             }
@@ -71,6 +83,7 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
 
     /**
      * {@inheritDoc}
+     * @param neighbour
      */
     @Override
     public void addNeighbourToFavorite(Neighbour neighbour){
@@ -79,10 +92,14 @@ public class DummyNeighbourApiService implements  NeighbourApiService {
 
     /**
      * {@inheritDoc}
+     * @param id
      */
     @Override
-    public void removeNeighbourFromFavorite(Neighbour neighbour){
-        neighbour.setFavorite(false);
+    public void removeNeighbourFromFavorite(long id){
+        Neighbour neighbour = getNeighbourById(id);
+        if (neighbour != null) {
+            neighbour.setFavorite(false);
+        }
     }
 
 

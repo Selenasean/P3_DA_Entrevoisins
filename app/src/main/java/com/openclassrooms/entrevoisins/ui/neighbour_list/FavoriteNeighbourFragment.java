@@ -14,26 +14,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.openclassrooms.entrevoisins.R;
 import com.openclassrooms.entrevoisins.di.DI;
+import com.openclassrooms.entrevoisins.events.DeleteNeighbourEvent;
 import com.openclassrooms.entrevoisins.model.Neighbour;
 import com.openclassrooms.entrevoisins.service.NeighbourApiService;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
 public class FavoriteNeighbourFragment extends Fragment {
 
     private NeighbourApiService mApiService;
-    private List<Neighbour> mFavNeighbours;
     private RecyclerView mRecyclerView;
-    MyNeighbourRecyclerViewAdapter mAdapter;
+    private MyNeighbourRecyclerViewAdapter mAdapter;
 
 
     /**
      * Create and return a new instance
      * @return @{@link FavoriteNeighbourFragment}
      */
-    public static FavoriteNeighbourFragment newInstance(){
+    public static FavoriteNeighbourFragment newInstance() {
         return (new FavoriteNeighbourFragment());
     }
 
@@ -44,11 +45,11 @@ public class FavoriteNeighbourFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Link fragment and his layout
         View view = inflater.inflate(R.layout.fragment_neighbour_list, container, false);
-        Context context = view.getContext();
 
+        Context context = view.getContext();
         mRecyclerView = (RecyclerView) view;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
@@ -61,25 +62,35 @@ public class FavoriteNeighbourFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-       initFavList();
+        EventBus.getDefault().register(this);
+        mAdapter.update(mApiService.getFavoriteNeighbours());
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onDeleteEvent(DeleteNeighbourEvent event) {
+        mAdapter.update(mApiService.getFavoriteNeighbours());
+    }
 
     /**
      * Init the List of favorite neighbours
      */
-    private void initFavList(){
-        Log.i("MAJ_LIST_FAV", "va chercher la liste des favoris");
-        mFavNeighbours = mApiService.getFavoriteNeighbours();
-        mAdapter = new MyNeighbourRecyclerViewAdapter(mFavNeighbours, new OnTrashClickListener() {
+    private void initFavList() {
+        mAdapter = new MyNeighbourRecyclerViewAdapter(mApiService.getFavoriteNeighbours(), new OnTrashClickListener() {
 
             @Override
             public void onDeleteClicked(long id) {
-                mApiService.removeNeighbourFromFavorite(mApiService.getNeighbourById(id));
-
+                mApiService.removeNeighbourFromFavorite(id);
+                mAdapter.update(mApiService.getFavoriteNeighbours());
             }
         });
-
         mRecyclerView.setAdapter(mAdapter);
     }
+
 }
+

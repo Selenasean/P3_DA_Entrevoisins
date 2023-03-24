@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.openclassrooms.entrevoisins.R;
 import com.openclassrooms.entrevoisins.databinding.ActivityDetailNeighbourBinding;
 import com.openclassrooms.entrevoisins.di.DI;
 import com.openclassrooms.entrevoisins.model.Neighbour;
@@ -23,9 +22,7 @@ import java.util.Objects;
 
 public class DetailNeighbourActivity extends AppCompatActivity {
     private ActivityDetailNeighbourBinding binding;
-    String mNeighbourName;
-    String mAvatarNeighbourURL;
-    long mNeighbourId;
+    private long mNeighbourId;
     public static final String NEIGHBOUR_ID = "NEIGHBOUR_ID";
     private NeighbourApiService mApiService;
     @NonNull Neighbour mNeighbour;
@@ -38,15 +35,13 @@ public class DetailNeighbourActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
-        /** Get instance on NeighbourApiService */
+        // Get instance on NeighbourApiService
         mApiService = DI.getNeighbourApiService();
 
-        /** Get neighbour by Id from Intent*/
+       // Get neighbour by Id from Intent
         Intent intent = getIntent();
         mNeighbourId = intent.getLongExtra(NEIGHBOUR_ID, 0);
-        Log.i("SEL_NEIGHBOUR_ID", String.valueOf(mNeighbourId));
         mNeighbour = Objects.requireNonNull(mApiService.getNeighbourById(mNeighbourId));
-        Log.i("SEL_NEIGHBOUR_API", String.valueOf(mNeighbour));
 
         displayIsFavorite(mNeighbour);
         displayNeighbourDetail(mNeighbour, intent);
@@ -54,12 +49,16 @@ public class DetailNeighbourActivity extends AppCompatActivity {
         onClickBackToMainActivity();
     }
 
-
+    /**
+     * Display neighbour's infos
+     * @param neighbour
+     * @param intent
+     */
     public void displayNeighbourDetail(Neighbour neighbour, Intent intent){
         if(intent != null){
             if(intent.hasExtra(NEIGHBOUR_ID)){
-                mNeighbourName = neighbour.getName();
-                mAvatarNeighbourURL = neighbour.getAvatarUrl();
+                final String mNeighbourName = neighbour.getName();
+                final String mAvatarNeighbourURL = neighbour.getAvatarUrl();
 
                 Glide.with(this).load(mAvatarNeighbourURL).into(binding.avatarNeighbourView);
                 binding.neighbourSelectedName.setText(mNeighbourName);
@@ -72,6 +71,10 @@ public class DetailNeighbourActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Show if the neighbour is favorite or not
+     * @param neighbour
+     * */
     public void displayIsFavorite(Neighbour neighbour){
         if(!neighbour.isFavorite()){
             binding.favoriteBtn.setImageResource(drawable.ic_star_border_black_24dp);
@@ -80,31 +83,34 @@ public class DetailNeighbourActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * onClick add neighbour to favorite or remove from it
+     * @param neighbour
+     * */
     public void onCLickFavoriteNeighbour(Neighbour neighbour){
         binding.favoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String mNeighbourName = neighbour.getName();
                 if(!neighbour.isFavorite()){
                     binding.favoriteBtn.setImageResource(drawable.ic_star_yellow_24dp);
-                // modify isFavorite to true using API
                     mApiService.addNeighbourToFavorite(neighbour);
                     // popup msg
                     Toast.makeText(DetailNeighbourActivity.this, "Vous avez ajouté " + mNeighbourName + " à vos voisins préférés !", Toast.LENGTH_SHORT).show();
                 }else{
                     binding.favoriteBtn.setImageResource(drawable.ic_star_border_black_24dp);
-                    // modify isFavorite to false using API
-                    mApiService.removeNeighbourFromFavorite(neighbour);
+                    mApiService.removeNeighbourFromFavorite(neighbour.getId());
                     // popup msg
                     Toast.makeText(DetailNeighbourActivity.this, "Vous avez retiré " + mNeighbourName + " de vos voisins préférés !", Toast.LENGTH_SHORT).show();
                 }
-                Log.i("SEL_DETAIL_ISFAV", String.valueOf(neighbour.isFavorite()));
-                Log.i("List_fav_after_add", String.valueOf(mApiService.getFavoriteNeighbours()));
             }
         });
     }
 
+    /**
+     * Back to previous page
+     */
     public void onClickBackToMainActivity(){
-        // onclick return btn
         binding.backToNeighbourList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -23,22 +23,34 @@ import butterknife.ButterKnife;
 
 public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeighbourRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Neighbour> mNeighbours; // declare Neighbours List
-    long mNeighbourId;
+    private List<Neighbour> mNeighbours; // declare Neighbours List
     public static final String NEIGHBOUR_ID = "NEIGHBOUR_ID";
-
     private OnTrashClickListener mListener;
-
-    // public void setOnTrashClickListener(OnTrashClickListener listener){ mListener = listener; }
 
     /**
      * Constructor
-     * */
-    public MyNeighbourRecyclerViewAdapter(List<Neighbour> items, OnTrashClickListener listener ) {
+     */
+    public MyNeighbourRecyclerViewAdapter(List<Neighbour> items, OnTrashClickListener listener) {
         mNeighbours = items;
         mListener = listener;
     }
 
+    /**
+     * ViewHolder
+     */
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.item_list_avatar)
+        public ImageView mNeighbourAvatar;
+        @BindView(R.id.item_list_name)
+        public TextView mNeighbourName;
+        @BindView(R.id.item_list_delete_button)
+        public ImageButton mDeleteButton;
+
+        public ViewHolder(View view, final OnTrashClickListener listener) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -52,13 +64,14 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Neighbour neighbour = mNeighbours.get(position);
 
+        //display elements of neighbour
         holder.mNeighbourName.setText(neighbour.getName());
         Glide.with(holder.mNeighbourAvatar.getContext())
                 .load(neighbour.getAvatarUrl())
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.mNeighbourAvatar);
 
-        // onclick listener on items clicked of the recycleView to go to detail page
+        // onClick listener on items clicked of the recycleView to go to detail page
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,12 +81,17 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
             }
 
         });
+
+        //onClick listener on delete button to delete neighbour using his id
         holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mNeighbourId = neighbour.getId();
-                mListener.onDeleteClicked(mNeighbourId);
-                notifyDataSetChanged();
+                int positionBindAdapter = holder.getBindingAdapterPosition();
+                if (positionBindAdapter != RecyclerView.NO_POSITION) {
+                    Neighbour neighbour = mNeighbours.get(positionBindAdapter);
+                    long mNeighbourId = neighbour.getId();
+                    mListener.onDeleteClicked(mNeighbourId);
+                }
             }
         });
 
@@ -84,56 +102,25 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
         return mNeighbours.size();
     }
 
-
-    /** ViewHolder */
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.item_list_avatar)
-        public ImageView mNeighbourAvatar;
-        @BindView(R.id.item_list_name)
-        public TextView mNeighbourName;
-        @BindView(R.id.item_list_delete_button)
-        public ImageButton mDeleteButton;
-
-        public ViewHolder(View view, final OnTrashClickListener listener) {
-            super(view);
-            ButterKnife.bind(this, view);
-
-           /** mDeleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Neighbour clickedNeighbour = neighbour;
-                    mNeighbourId = neighbour.getId();
-                    mListener.deleteFromFavoriteList(mNeighbourId);
-                }
-            });*/
-
-
-
-           /** mDeleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mNeighbourId = neighbour.getId();
-                    Log.i("listener_RVadapter", String.valueOf(listener));
-                                   // if(inWhichFragment == 0){
-                                        Log.i("RVadapter_click", "ça clic sur trash fragment 0");
-                    mNeighbourId = neighbour.getId();
-                                     //   listener.deleteFromFavoriteList(mNeighbourId);
-
-                                    //}else {
-                                        Log.i("RVadapter_click", "ça clic sur trash fragment 1");
-                                      //  listener.deleteFromFavoriteList(mNeighbourId);
-                                    //}
-                        }
-            });*/
-        }
-
-    }
-
-    public void launchDetailNeighbourActivity(Neighbour neighbour, Context context){
+    /**
+     * Start Detail Activity
+     * @param neighbour
+     * @param context
+     */
+    public void launchDetailNeighbourActivity(Neighbour neighbour, Context context) {
         final Context myContext = context;
         Intent intent = new Intent(myContext, DetailNeighbourActivity.class);
-        mNeighbourId = neighbour.getId();
+        long mNeighbourId = neighbour.getId();
         intent.putExtra(NEIGHBOUR_ID, mNeighbourId);
         context.startActivity(intent);
+    }
+
+    /**
+     * Method to update neighbours lists after a change
+     * @param neighboursList
+     */
+    public void update(List<Neighbour> neighboursList) {
+        mNeighbours = neighboursList;
+        notifyDataSetChanged();
     }
 }

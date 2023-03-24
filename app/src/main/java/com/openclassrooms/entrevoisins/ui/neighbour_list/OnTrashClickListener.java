@@ -7,7 +7,7 @@ public interface OnTrashClickListener {
 
     /**
      * OnClick on delete button, delete neighbour from the Neighbour List
-     * @param
+     * @param id
     */
     void onDeleteClicked(long id);
 }
