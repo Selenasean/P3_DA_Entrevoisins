@@ -26,13 +26,16 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
     private List<Neighbour> mNeighbours; // declare Neighbours List
     public static final String NEIGHBOUR_ID = "NEIGHBOUR_ID";
     private OnTrashClickListener mListener;
+    private int inWhichFragment;
 
     /**
      * Constructor
      */
-    public MyNeighbourRecyclerViewAdapter(List<Neighbour> items, OnTrashClickListener listener) {
+    public MyNeighbourRecyclerViewAdapter(List<Neighbour> items, int inWhichfragment,  OnTrashClickListener listener) {
         mNeighbours = items;
+        inWhichFragment = inWhichfragment;
         mListener = listener;
+
     }
 
     /**
@@ -54,10 +57,10 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_neighbour, parent, false);
-        ViewHolder neighbourViewHolder = new ViewHolder(view, mListener);
-        return neighbourViewHolder;
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.fragment_neighbour, parent, false);
+            ViewHolder neighbourViewHolder = new ViewHolder(view, mListener);
+            return neighbourViewHolder;
     }
 
     @Override

@@ -34,6 +34,7 @@
         android:layout_height="42dp"
         android:layout_marginEnd="16dp"
         android:background="@null"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="@+id/item_list_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/item_list_name"

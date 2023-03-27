@@ -81,7 +81,7 @@ public class FavoriteNeighbourFragment extends Fragment {
      * Init the List of favorite neighbours
      */
     private void initFavList() {
-        mAdapter = new MyNeighbourRecyclerViewAdapter(mApiService.getFavoriteNeighbours(), new OnTrashClickListener() {
+        mAdapter = new MyNeighbourRecyclerViewAdapter(mApiService.getFavoriteNeighbours(),1, new OnTrashClickListener() {
 
             @Override
             public void onDeleteClicked(long id) {
