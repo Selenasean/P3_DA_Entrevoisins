@@ -1,6 +1,6 @@
 # Entrevoins App
 
-This repository contains a mini-application for P3 of the Android OpenClassrooms route.
+This repository contains a mini-application written in Java for P3 of the Android OpenClassrooms route.
 
 The app is about helping neighbours, from the same neighborhood, to communicate and allow them to exchange services, such as : pet sitting, craft, item barter, private lesson, and many more..
 
