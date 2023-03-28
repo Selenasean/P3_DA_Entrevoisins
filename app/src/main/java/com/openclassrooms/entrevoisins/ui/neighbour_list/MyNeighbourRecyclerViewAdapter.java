@@ -26,14 +26,13 @@ public class MyNeighbourRecyclerViewAdapter extends RecyclerView.Adapter<MyNeigh
     private List<Neighbour> mNeighbours; // declare Neighbours List
     public static final String NEIGHBOUR_ID = "NEIGHBOUR_ID";
     private OnTrashClickListener mListener;
-    private int inWhichFragment;
+
 
     /**
      * Constructor
      */
-    public MyNeighbourRecyclerViewAdapter(List<Neighbour> items, int inWhichfragment,  OnTrashClickListener listener) {
+    public MyNeighbourRecyclerViewAdapter(List<Neighbour> items,  OnTrashClickListener listener) {
         mNeighbours = items;
-        inWhichFragment = inWhichfragment;
         mListener = listener;
 
     }

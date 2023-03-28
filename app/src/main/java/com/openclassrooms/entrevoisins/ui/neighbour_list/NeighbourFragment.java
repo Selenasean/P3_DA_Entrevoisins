@@ -80,11 +80,13 @@ public class NeighbourFragment extends Fragment {
      * Init the List of neighbours
      */
     private void initList() {
-        mAdapter = new MyNeighbourRecyclerViewAdapter(mApiService.getNeighbours(),0, new OnTrashClickListener(){
+        mAdapter = new MyNeighbourRecyclerViewAdapter(mApiService.getNeighbours(), new OnTrashClickListener(){
 
             @Override
             public void onDeleteClicked(long id) {
-                mApiService.removeNeighbourFromFavorite(id);
+                if(mApiService.getNeighbourById(id).isFavorite()){
+                    mApiService.removeNeighbourFromFavorite(id);
+                }
                 mApiService.deleteNeighbour(id);
                 mAdapter.update(mApiService.getNeighbours());
             }

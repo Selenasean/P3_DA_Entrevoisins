@@ -32,7 +32,6 @@ public class NeighbourServiceTest {
     @Before
     public void setup() {
         neighbours.add(new Neighbour(1, "name1", "avatarURl", "adress", "phone number", "aboutMe", false));
-
         neighbours.add(new Neighbour(2, "name1", "avatarURl", "adress", "phone number", "aboutMe", true));
         service = DI.getNewInstanceApiService(neighbours);
     }
@@ -46,15 +45,15 @@ public class NeighbourServiceTest {
     @Test
     public void getFavoriteNeighboursWithSuccess() {
         List<Neighbour> favNeighbours = service.getFavoriteNeighbours();
-        List<Neighbour> expectedNeighbours = favNeighbours;
         for (Neighbour neighbour : neighbours) {
             if (neighbour.isFavorite()) {
                 favNeighbours.add(neighbour);
             }
         }
         // check if neighbour favorite is in Neighbour's favorite List
-        assertTrue(service.getFavoriteNeighbours().contains(neighbours.get(1)));
-        // MatcherAssert.assertThat(favNeighbours,IsIterableContainingInAnyOrder.containsInAnyOrder(expectedNeighbours.toArray()));
+        assertTrue(favNeighbours.contains(neighbours.get(1)));
+        // check if fav list is an array
+        MatcherAssert.assertThat(favNeighbours,IsIterableContainingInAnyOrder.containsInAnyOrder(favNeighbours.toArray()));
     }
 
     @Test

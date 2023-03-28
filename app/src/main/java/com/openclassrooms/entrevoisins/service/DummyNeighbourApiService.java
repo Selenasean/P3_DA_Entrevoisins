@@ -62,7 +62,7 @@ public class DummyNeighbourApiService implements NeighbourApiService {
      * @param id
      */
     @Override
-    public void deleteNeighbour(long id ) {
+    public void deleteNeighbour(long id) {
         for (Neighbour neighbour : neighbours) {
             if(neighbour.getId() == id){
                 EventBus.getDefault().post(new DeleteNeighbourEvent(neighbour));
