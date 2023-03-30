@@ -131,6 +131,26 @@ public class NeighboursListTest {
     }
 
     /**
+     * When we delete an item which is favorite, from neighbours list, the item is no more shown in both list
+     */
+    @Test
+    public void neighbourFavorite_deleteFromNeighboursList_shouldBeRemoveFromBothList(){
+        onView(withIndex(withId(R.id.list_neighbours),0))
+                .check(withItemCount(ITEM_COUNT_NEIGHBOURS_LIST));
+        onView((withIndex(withId(R.id.list_neighbours),1)))
+                .check(withItemCount(ITEM_COUNT_FAVORITE_LIST));
+
+        // delete from neighbours list, item position 0 which is favorite
+        onView(withIndex(withId(R.id.list_neighbours),0))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, new DeleteViewAction()));
+        //no more shown in My Neighbours Fragment
+        onView(withIndex(withId(R.id.list_neighbours),0)).check(withItemCount(ITEM_COUNT_NEIGHBOURS_LIST -1));
+        // no more shown in Favorite Fragment
+        onView(withText("Favorites")).perform(click());
+        onView(withIndex(withId(R.id.list_neighbours),1)).check(withItemCount(ITEM_COUNT_FAVORITE_LIST -1));
+    }
+
+    /**
      * When we click on an item, detail activity is launch
      */
     @Test

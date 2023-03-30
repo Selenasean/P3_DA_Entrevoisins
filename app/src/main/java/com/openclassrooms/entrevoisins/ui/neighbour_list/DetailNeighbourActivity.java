@@ -20,7 +20,8 @@ import com.openclassrooms.entrevoisins.service.NeighbourApiService;
 
 import java.util.Objects;
 
-public class DetailNeighbourActivity extends AppCompatActivity {
+public class
+DetailNeighbourActivity extends AppCompatActivity {
     private ActivityDetailNeighbourBinding binding;
     private long mNeighbourId;
     public static final String NEIGHBOUR_ID = "NEIGHBOUR_ID";
@@ -40,11 +41,15 @@ public class DetailNeighbourActivity extends AppCompatActivity {
 
        // Get neighbour by Id from Intent
         Intent intent = getIntent();
-        mNeighbourId = intent.getLongExtra(NEIGHBOUR_ID, 0);
-        mNeighbour = Objects.requireNonNull(mApiService.getNeighbourById(mNeighbourId));
+        if(intent != null){
+            if(intent.hasExtra(NEIGHBOUR_ID)){
+                mNeighbourId = intent.getLongExtra(NEIGHBOUR_ID, 0);
+                mNeighbour = Objects.requireNonNull(mApiService.getNeighbourById(mNeighbourId));
+            }
+        }
 
         displayIsFavorite(mNeighbour);
-        displayNeighbourDetail(mNeighbour, intent);
+        displayNeighbourDetail(mNeighbour);
         onCLickFavoriteNeighbour(mNeighbour);
         onClickBackToMainActivity();
     }
@@ -52,23 +57,18 @@ public class DetailNeighbourActivity extends AppCompatActivity {
     /**
      * Display neighbour's infos
      * @param neighbour
-     * @param intent
      */
-    public void displayNeighbourDetail(Neighbour neighbour, Intent intent){
-        if(intent != null){
-            if(intent.hasExtra(NEIGHBOUR_ID)){
-                final String mNeighbourName = neighbour.getName();
-                final String mAvatarNeighbourURL = neighbour.getAvatarUrl();
+    public void displayNeighbourDetail(Neighbour neighbour){
+        final String mNeighbourName = neighbour.getName();
+        final String mAvatarNeighbourURL = neighbour.getAvatarUrl();
 
-                Glide.with(this).load(mAvatarNeighbourURL).into(binding.avatarNeighbourView);
-                binding.neighbourSelectedName.setText(mNeighbourName);
-                binding.neighbourNameDisplay.setText(mNeighbourName);
-                binding.locationTextView.setText(neighbour.getAddress());
-                binding.phoneTextView.setText(neighbour.getPhoneNumber());
-                binding.webContact.setText("www.facebook.fr/" + mNeighbourName);
-                binding.aboutMeDescription.setText(neighbour.getAboutMe());
-            }
-        }
+        Glide.with(this).load(mAvatarNeighbourURL).into(binding.avatarNeighbourView);
+        binding.neighbourSelectedName.setText(mNeighbourName);
+        binding.neighbourNameDisplay.setText(mNeighbourName);
+        binding.locationTextView.setText(neighbour.getAddress());
+        binding.phoneTextView.setText(neighbour.getPhoneNumber());
+        binding.webContact.setText("www.facebook.fr/" + mNeighbourName);
+        binding.aboutMeDescription.setText(neighbour.getAboutMe());
     }
 
     /**
