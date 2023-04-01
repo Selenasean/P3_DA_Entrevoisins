@@ -28,11 +28,13 @@ public class NeighbourServiceTest {
 
     private NeighbourApiService service;
     private List<Neighbour> neighbours = new ArrayList<>();
+    private Neighbour firstNeighbour = new Neighbour(1, "name1", "avatarURl", "adress", "phone number", "aboutMe", false);
+    private Neighbour favoriteNeighbour = new Neighbour(2, "name1", "avatarURl", "adress", "phone number", "aboutMe", true);
 
     @Before
     public void setup() {
-        neighbours.add(new Neighbour(1, "name1", "avatarURl", "adress", "phone number", "aboutMe", false));
-        neighbours.add(new Neighbour(2, "name1", "avatarURl", "adress", "phone number", "aboutMe", true));
+        neighbours.add(firstNeighbour);
+        neighbours.add(favoriteNeighbour);
         service = DI.getNewInstanceApiService(neighbours);
     }
 
@@ -45,34 +47,23 @@ public class NeighbourServiceTest {
     @Test
     public void getFavoriteNeighboursWithSuccess() {
         List<Neighbour> favNeighbours = service.getFavoriteNeighbours();
-        for (Neighbour neighbour : neighbours) {
-            if (neighbour.isFavorite()) {
-                favNeighbours.add(neighbour);
-            }
-        }
-        // check if neighbour favorite is in Neighbour's favorite List
-        assertTrue(favNeighbours.contains(neighbours.get(1)));
+        Neighbour expectedFavNeighbours =  favoriteNeighbour;
         // check if fav list is an array
-        MatcherAssert.assertThat(favNeighbours,IsIterableContainingInAnyOrder.containsInAnyOrder(favNeighbours.toArray()));
+        MatcherAssert.assertThat(favNeighbours,IsIterableContainingInAnyOrder.containsInAnyOrder(expectedFavNeighbours));
     }
 
     @Test
     public void getNeighbourByIdWithSuccess() {
         Neighbour neighbourById = service.getNeighbourById(1);
-        for (Neighbour neighbour : neighbours) {
-            if (neighbour.getId() == neighbourById.getId()) {
-                Neighbour expectedNeighbour = neighbour;
-                assertEquals(neighbourById, expectedNeighbour);
-            }
-        }
-        assertNull("should be null", null);
+        assertEquals(firstNeighbour, neighbourById);
     }
 
     @Test
     public void deleteNeighbourWithSuccess() {
-        Neighbour neighbourToDelete = neighbours.get(0);
+        Neighbour neighbourToDelete = firstNeighbour;
         service.deleteNeighbour(neighbourToDelete.getId());
         assertFalse(neighbours.contains(neighbourToDelete));
+        assertTrue(neighbours.contains(favoriteNeighbour));
     }
 
     @Test
@@ -86,15 +77,16 @@ public class NeighbourServiceTest {
     @Test
     public void addNeighbourToFavoriteWithSuccess() {
         // add a neighbour which isFavorite = false
-        Neighbour neighbourToAdd = service.getNeighbourById(1);
+        Neighbour neighbourToAdd = firstNeighbour;
         service.addNeighbourToFavorite(neighbourToAdd);
-        assertTrue(neighbourToAdd.isFavorite());
+        List <Neighbour> favList = service.getFavoriteNeighbours();
+        MatcherAssert.assertThat(favList, IsIterableContainingInAnyOrder.containsInAnyOrder(neighbourToAdd, favoriteNeighbour));
     }
 
     @Test
     public void removeNeighbourFromFavoriteWithSuccess() {
         // remove a neighbour which isFavorite = true
-        Neighbour neighbourToRemove = service.getNeighbours().get(1);
+        Neighbour neighbourToRemove = favoriteNeighbour;
         service.removeNeighbourFromFavorite(neighbourToRemove.getId());
         assertFalse(neighbourToRemove.isFavorite());
         assertFalse(service.getFavoriteNeighbours().contains(neighbourToRemove));

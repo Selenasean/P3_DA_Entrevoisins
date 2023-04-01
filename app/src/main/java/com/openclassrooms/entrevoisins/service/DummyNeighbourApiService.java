@@ -65,6 +65,7 @@ public class DummyNeighbourApiService implements NeighbourApiService {
     public void deleteNeighbour(long id) {
         for (Neighbour neighbour : neighbours) {
             if(neighbour.getId() == id){
+                removeNeighbourFromFavorite(id);
                 EventBus.getDefault().post(new DeleteNeighbourEvent(neighbour));
                 neighbours.remove(neighbour);
                 return;

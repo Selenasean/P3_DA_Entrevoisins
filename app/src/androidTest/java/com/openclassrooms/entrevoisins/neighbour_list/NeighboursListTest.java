@@ -30,6 +30,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.hasMinimumChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.openclassrooms.entrevoisins.utils.MatcherUtils.withIndex;
 import static com.openclassrooms.entrevoisins.utils.RecyclerViewItemCountAssertion.withItemCount;
 
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -62,26 +63,6 @@ public class NeighboursListTest {
         Intents.init();
     }
 
-    /**
-     * Custom Matcher to deal with the use of te same RecycleView in 2 different views
-     */
-    public static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {
-        return new TypeSafeMatcher<View>() {
-            int currentIndex = 0;
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with index: ");
-                description.appendValue(index);
-                matcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                return matcher.matches(view) && currentIndex++ == index;
-            }
-        };
-    }
 
     /**
      * We ensure that our recyclerviews are displaying at least on item each

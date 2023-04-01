@@ -84,9 +84,6 @@ public class NeighbourFragment extends Fragment {
 
             @Override
             public void onDeleteClicked(long id) {
-                if(mApiService.getNeighbourById(id).isFavorite()){
-                    mApiService.removeNeighbourFromFavorite(id);
-                }
                 mApiService.deleteNeighbour(id);
                 mAdapter.update(mApiService.getNeighbours());
             }
